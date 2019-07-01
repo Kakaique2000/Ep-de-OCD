@@ -173,7 +173,7 @@ public class Main {
 	
 		  	
 		   
-		   String[] retorno = new String[3];
+		   String[] retorno = new String[4];
 		   retorno = ulaa.executa(auxIR); 
 		   pcc.setPC(incPC(pcc.getPC()));
 

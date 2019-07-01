@@ -16,6 +16,13 @@ public class ULA{
 		testeGreater = false;
 		testeLower = false;
 	}
+	
+	public static String getSignFlag() {
+		if(testeEqual) return "0";
+		if(testeLower) return "-1";
+		if(testeGreater) return "1";
+		return "0";
+	}
 
 	public static String[] executa(String s){
 
@@ -140,9 +147,7 @@ public class ULA{
 		// CMP
 		if(opcode.equalsIgnoreCase(Main.array[5])){
 			cmp(aux_comando_registra1,aux_comando_registra2);
-			if(testeEqual) resp[3] = "0";
-			if(testeLower) resp[3] = "-1";
-			if(testeGreater) resp[3] = "1";
+			resp[3] = getSignFlag();
 			return(resp);
 		}
 
@@ -272,8 +277,9 @@ public class ULA{
 		a = String.format("%16s",a).replace(' ', '0');
 		//if(testeEqual == true)
 		if(testeEqual == true) {
-			PC.setPC(a);
 			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+			
 		}
 			
 		resetFlags();
@@ -283,8 +289,9 @@ public class ULA{
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
 		if(testeEqual == false){
-			PC.setPC(a);
 			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+			
 		}
 		resetFlags();
 	}
@@ -293,8 +300,9 @@ public class ULA{
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
 		if(testeGreater == true){
-			PC.setPC(a);
 			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+			
 		}
 		resetFlags();
 	}
@@ -303,8 +311,8 @@ public class ULA{
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
 		if(testeLower == true){
-			PC.setPC(a);
 			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
 		}
 		resetFlags();
 	}
@@ -313,8 +321,9 @@ public class ULA{
 		a = Integer.toBinaryString(valor);
 		a = a.substring((a.length()/2),a.length());
 		if((testeEqual == true) || (testeGreater == true)){
-			PC.setPC(a);
 			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+		
 		}
 		resetFlags();
 	}
@@ -323,8 +332,9 @@ public class ULA{
 		a = Integer.toBinaryString(valor);
 		a = a.substring((a.length()/2),a.length());
 		if((testeEqual == true) || (testeLower == true)){
-			PC.setPC(a);
 			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+			
 		}
 		resetFlags();
 	}
@@ -347,10 +357,11 @@ public class ULA{
 			res = "1"+res.substring(0,(res.length()-1));
 			}
 			else res = String.format("%16s",res).replace(' ', '0');
-			String[] resposta = new String[3];
+			String[] resposta = new String[4];
 			resposta[0] = res;
 			resposta[1] = Integer.toString(carry);
 			resposta[2] = Integer.toString(zero);
+			resposta[3] = getSignFlag();
 			return(resposta);
 	}
 	
@@ -371,10 +382,11 @@ public class ULA{
 		}
 		else 
 			res = String.format("%16s",res).replace(' ', '0');
-		String[] resposta = new String[3];
+		String[] resposta = new String[4];
 		resposta[0] = res;
 		resposta[1] = Integer.toString(carry);
 		resposta[2] = Integer.toString(zero);
+		resposta[3] = getSignFlag();
 		return(resposta);
 	}
 
@@ -395,10 +407,11 @@ public class ULA{
 		}
 		else 
 			res = String.format("%16s",res).replace(' ', '0');
-		String[] resposta = new String[3];
+		String[] resposta = new String[4];
 		resposta[0] = res;
 		resposta[1] = Integer.toString(carry);
 		resposta[2] = Integer.toString(zero);
+		resposta[3] = getSignFlag();
 		return(resposta);
 	}
 
@@ -419,10 +432,11 @@ public class ULA{
 		}
 		else 
 			res = String.format("%16s",res).replace(' ', '0');
-		String[] resposta = new String[3];
+		String[] resposta = new String[4];
 		resposta[0] = res;
 		resposta[1] = Integer.toString(carry);
 		resposta[2] = Integer.toString(zero);
+		resposta[3] = getSignFlag();
 		return(resposta);
 	}
 
