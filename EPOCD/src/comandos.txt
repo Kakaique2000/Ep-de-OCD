@@ -1,0 +1,10 @@
+ADD ax,10
+MOV ax,bx
+ADD ax,10
+SUB ax,5
+MUL ax,2
+DIV ax,5
+
+
+
+
