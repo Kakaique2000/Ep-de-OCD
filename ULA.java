@@ -16,6 +16,13 @@ public class ULA{
 		testeGreater = false;
 		testeLower = false;
 	}
+	
+	public static String getSignFlag() {
+		if(testeEqual) return "0";
+		if(testeLower) return "-1";
+		if(testeGreater) return "1";
+		return "0";
+	}
 
 	public static String[] executa(String s){
 
@@ -24,6 +31,7 @@ public class ULA{
 		Main.portas[(portas[2]-1)] = 1;
 		
 		// Separacao dos comandos
+		
 		String opcode = s.substring(0,5); 
 		int registra1 = Main.qualRegistrador(s.substring(5,21));
 		int registra2 = Main.qualRegistrador(s.substring(21,37));
@@ -34,10 +42,11 @@ public class ULA{
 		boolean boolRegitrador1 = false;
 		boolean boolRegistrador2 = false;
 
-		String[] resp = new String[3];
+		String[] resp = new String[4];
 		resp[0] = "0";
 		resp[1] = "0";
 		resp[2] = "0";
+		resp[3] = "0";
 
 		// se for diferente de "-1" significa que se trata de um registrador (AX, BX, CX ou DX)
 		if(registra1 != -1){
@@ -111,6 +120,7 @@ public class ULA{
 					aux_comando_registra2 = Main.dxx.getDX();
 				Main.dxx.setDX(aux_comando_registra2);
 			}
+		
 			return(resp);
 		}
 
@@ -137,6 +147,7 @@ public class ULA{
 		// CMP
 		if(opcode.equalsIgnoreCase(Main.array[5])){
 			cmp(aux_comando_registra1,aux_comando_registra2);
+			resp[3] = getSignFlag();
 			return(resp);
 		}
 
@@ -255,6 +266,7 @@ public class ULA{
 	*/
 	private static void jmp(String a , String b){ 
 		int valor = (Integer.parseInt(a,2)-1); 
+		Main.janela.irPraLinha(valor);
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
 		PC.setPC(a);
@@ -264,45 +276,66 @@ public class ULA{
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
 		//if(testeEqual == true)
-		if(testeEqual == true)	
+		if(testeEqual == true) {
+			Main.janela.irPraLinha(valor);
 			PC.setPC(a);
+			
+		}
+			
 		resetFlags();
 	}
 	public static void jne(String a , String b){
 		int valor = (Integer.parseInt(a,2)-1);		
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
-		if(testeEqual == false)
+		if(testeEqual == false){
+			Main.janela.irPraLinha(valor);
 			PC.setPC(a);
+			
+		}
 		resetFlags();
 	}
 	public static void jg(String a , String b){
 		int valor = (Integer.parseInt(a,2)-1);		
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
-		if(testeGreater == true)
+		if(testeGreater == true){
+			Main.janela.irPraLinha(valor);
 			PC.setPC(a);
+			
+		}
 		resetFlags();
 	}
 	public static void jl(String a , String b){
 		int valor = (Integer.parseInt(a,2)-1);		
 		a = Integer.toBinaryString(valor);
 		a = String.format("%16s",a).replace(' ', '0');
-		if(testeLower == true)PC.setPC(a);
+		if(testeLower == true){
+			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+		}
 		resetFlags();
 	}
 	public static void jge(String a , String b){
 		int valor = (Integer.parseInt(a,2)-1);		
 		a = Integer.toBinaryString(valor);
 		a = a.substring((a.length()/2),a.length());
-		if((testeEqual == true) || (testeGreater == true))PC.setPC(a);
+		if((testeEqual == true) || (testeGreater == true)){
+			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+		
+		}
 		resetFlags();
 	}
 	public static void jle(String a , String b){
 		int valor = (Integer.parseInt(a,2)-1);		
 		a = Integer.toBinaryString(valor);
 		a = a.substring((a.length()/2),a.length());
-		if((testeEqual == true) || (testeLower == true))PC.setPC(a);
+		if((testeEqual == true) || (testeLower == true)){
+			Main.janela.irPraLinha(valor);
+			PC.setPC(a);
+			
+		}
 		resetFlags();
 	}
 
@@ -324,10 +357,11 @@ public class ULA{
 			res = "1"+res.substring(0,(res.length()-1));
 			}
 			else res = String.format("%16s",res).replace(' ', '0');
-			String[] resposta = new String[3];
+			String[] resposta = new String[4];
 			resposta[0] = res;
 			resposta[1] = Integer.toString(carry);
 			resposta[2] = Integer.toString(zero);
+			resposta[3] = getSignFlag();
 			return(resposta);
 	}
 	
@@ -348,10 +382,11 @@ public class ULA{
 		}
 		else 
 			res = String.format("%16s",res).replace(' ', '0');
-		String[] resposta = new String[3];
+		String[] resposta = new String[4];
 		resposta[0] = res;
 		resposta[1] = Integer.toString(carry);
 		resposta[2] = Integer.toString(zero);
+		resposta[3] = getSignFlag();
 		return(resposta);
 	}
 
@@ -372,10 +407,11 @@ public class ULA{
 		}
 		else 
 			res = String.format("%16s",res).replace(' ', '0');
-		String[] resposta = new String[3];
+		String[] resposta = new String[4];
 		resposta[0] = res;
 		resposta[1] = Integer.toString(carry);
 		resposta[2] = Integer.toString(zero);
+		resposta[3] = getSignFlag();
 		return(resposta);
 	}
 
@@ -396,14 +432,16 @@ public class ULA{
 		}
 		else 
 			res = String.format("%16s",res).replace(' ', '0');
-		String[] resposta = new String[3];
+		String[] resposta = new String[4];
 		resposta[0] = res;
 		resposta[1] = Integer.toString(carry);
 		resposta[2] = Integer.toString(zero);
+		resposta[3] = getSignFlag();
 		return(resposta);
 	}
 
 	private static void cmp(String a, String b){
+		resetFlags();
 		int va = Integer.parseInt(a,2);
 		int vb = Integer.parseInt(b,2);
 		if(va == vb) 
@@ -412,5 +450,6 @@ public class ULA{
 			testeGreater = true;
 		if(va < vb)
 			testeLower = true;
+	
 	}
 }

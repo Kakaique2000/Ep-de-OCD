@@ -10,5 +10,15 @@ public  class PC{
 	public static void setPC(String p){
 		Main.portas[(portas[0]-1)] = 1;
 		pc = p;
+		
 	}
+	
+	public static void setPC(int p){
+		
+		Main.portas[(portas[0]-1)] = 1;
+		pc = Integer.toBinaryString(p);
+		pc = String.format("%16s",pc).replace(' ', '0');
+		
+	}
+	
 }
