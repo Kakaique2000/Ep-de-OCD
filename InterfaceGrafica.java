@@ -18,6 +18,8 @@ import javax.swing.border.BevelBorder;
 import java.awt.SystemColor;
 import javax.swing.border.EtchedBorder;
 import javax.swing.UIManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class InterfaceGrafica {
 
@@ -79,8 +81,6 @@ public class InterfaceGrafica {
 				linhasCursorBuffer++;
 				quantidadeLinhasPreCursor++;
 				if(quantidadeLinhasPreCursor == linha) {
-					System.out.println("caractere atual" + posCursor);
-					System.out.println("Indo para caractere: " + (i + quantidadeLinhasPreCursor));
 					textPane.setCaretPosition(i);
 					posCursor = i;
 					break;
@@ -243,6 +243,12 @@ public class InterfaceGrafica {
 		frame.getContentPane().setLayout(null);
 		
 		textPane = new JTextPane();
+		textPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				flagExecutouComando=false;
+			}
+		});
 		textPane.setBounds(10, 38, 282, 384);
 		frame.getContentPane().add(textPane);
 		
