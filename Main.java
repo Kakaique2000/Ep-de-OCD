@@ -1,9 +1,18 @@
 import java.util.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.awt.EventQueue;
 import java.io.*;
 
 public class Main {
+	
+	public static InterfaceGrafica janela;
+	
+	public static void restart() {
+		
+		pcc.setPC("0000000000000000");
+		irr.setIR("0000000000000000000000000000000000000");
+		mbrr.setMBRfromUC("0000000000000000000000000000000000000");
+		marr.setMAR("0000000000000000");
+	}
 
 	public static AX axx = new AX();
 	public static BX bxx = new BX();
@@ -53,13 +62,13 @@ public class Main {
 	}
 
 	// Lê o arquivo e armazena na memoria
-	public static void leituraDoArquivo() {
+	public static void leituraDoArquivo(String codigo) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("comandos.txt"));
+            BufferedReader reader = new BufferedReader(new StringReader(codigo));
             String line;
             line = reader.readLine();
             int a = 0;
-            while (line != null) {
+            while (line != null && line.length() > 2) {
 				String opcode = tradutorOpCode(line.substring(0,3));       
 				String novaL = line.substring(4,line.length());
 				String[] args = novaL.split(",");
@@ -79,7 +88,9 @@ public class Main {
             }
             memoriaa.mem[a] = "EXIT";
         } 
-        catch (Exception e) {}; 
+        catch (Exception e) {
+        	e.printStackTrace();
+        }; 
     }
 
     // tradutorOpCode o opCode de "texto" para "numerico" -> exemplo: "ADD" vira "00010"
@@ -93,11 +104,15 @@ public class Main {
 	public static void resetPortas(){
 		for(int i = 0 ; i < portas.length ; i++)
 			portas[i] = 0;
+		
 	}
 
 	public static void imprimePortasTabela(){
+		String settingString = "";
 		for(int i = 0 ; i < portas.length/2 ; i++)
-			System.out.print("Porta " + (i+1) +": " + portas[i]+ "\t"  + "Porta " + (i+14) +": " + portas[i+13]+ " \n");
+			settingString += 	"Porta " + (i+1) +": " + portas[i]+ "\t"  + "Porta " + (i+14) +": " + portas[i+13]+ " \n";
+		janela.settaPortasEstado(settingString);
+		
 	}
 
 	public static void imprimePortasHorizontal(){
@@ -134,61 +149,115 @@ public class Main {
 		}
 		return -1;
 	}
-
-
-    public static void main(String[] args) throws IOException{
-
+	
+	public static void executarCodigo(String codigo) throws IOException {
+		
+		restart();
 		resetPortas();
-		leituraDoArquivo();
-
+		leituraDoArquivo(codigo);
+		
 		String auxIR = "0";
         while (auxIR != null) {
            marr.setMAR(pcc.getPC());
 		   memoriaa.getMemoria(); 
 		   irr.setIR(mbrr.getMBRfromUC());
 		   auxIR = irr.getIR();
-		   if(auxIR == null) 
-		   		break;
-		  if(auxIR.equalsIgnoreCase("EXIT")) 
-		  	break;
-		   String[] retorno = new String[3];
+		   
+		   if(auxIR == null) {
+			  break;
+		   }
+		  if(auxIR.equalsIgnoreCase("EXIT")) {
+			  break; 
+		  }
+		  
+	
+		  	
+		   
+		   String[] retorno = new String[4];
 		   retorno = ulaa.executa(auxIR); 
 		   pcc.setPC(incPC(pcc.getPC()));
 
+//		 
+//		   System.out.println("Flags:");
+//		   System.out.println("Overflow flag(of): "+retorno[1]);
+//		   System.out.println("Zero flag(zf): "+retorno[2]);
+		   janela.setRegistradorLabel("Overflow", retorno[1]);
+		   janela.setRegistradorLabel("Zero", retorno[2]);
+		   janela.setRegistradorLabel("sign", retorno[3]);
+		   
+//		   System.out.println();
 
-		   System.out.println("Flags:");
-		   System.out.println("Overflow flag(of): "+retorno[1]);
-		   System.out.println("Zero flag(zf): "+retorno[2]);
-		   System.out.println();
-
-		   System.out.print("PALAVRA HORIZONTAL: ");
-		   imprimePortasHorizontal();
-		   System.out.print(retorno[1]);
-           System.out.println(retorno[2]);		   
-		   System.out.println();
+//		   System.out.print("PALAVRA HORIZONTAL: ");
+//		   imprimePortasHorizontal();
+//		   System.out.print(retorno[1]);
+//           System.out.println(retorno[2]);		   
+//		   System.out.println();
 
 		   // Imprime o estado das portas "1" =  aberta e "0" = fechada
-		   System.out.println("ESTADO DAS PORTAS:");
+//		   System.out.println("ESTADO DAS PORTAS:");
 		   imprimePortasTabela();
-		   System.out.println();
+//		   System.out.println();
 
 		   // Imprime o estado atual dos registradores
-		   System.out.println("Registradores:");
-		   System.out.println("AX: "+axx.getAX()); 
-		   System.out.println("BX: "+bxx.getBX());
-		   System.out.println("CX: "+cxx.getCX());
-		   System.out.println("DX: "+dxx.getDX());
+//		   System.out.println("Registradores:");
+//		   System.out.println("AX: "+axx.getAX()); 
+//		   System.out.println("BX: "+bxx.getBX());
+//		   System.out.println("CX: "+cxx.getCX());
+//		   System.out.println("DX: "+dxx.getDX());
+		   
+		   janela.setRegistradorLabel("AX", axx.getAX());
+		   janela.setRegistradorLabel("BX", bxx.getBX());
+		   janela.setRegistradorLabel("CX", cxx.getCX());
+		   janela.setRegistradorLabel("DX", dxx.getDX());
+		   
 
 		   // Isso aqui ta dando uma cagada, MBR e IR nao tao funcionando
-		   System.out.println("PC: "+pcc.getPC()); 
-		   System.out.println("MAR: "+marr.getMAR());
-		   System.out.println("MBR: "+mbrr.getMBRfromUC());
-		   System.out.println("IR: "+irr.getIR());
+//		   System.out.println("PC: "+pcc.getPC()); 
+//		   System.out.println("MAR: "+marr.getMAR());
+//		   System.out.println("MBR: "+mbrr.getMBRfromUC());
+//		   System.out.println("IR: "+irr.getIR());
+		   
+		   janela.setRegistradorLabel("PC", pcc.getPC());
+		   janela.setRegistradorLabel("MAR", marr.getMAR());
+		   janela.setRegistradorLabel("MBR", mbrr.getMBRfromUC());
+		   janela.setRegistradorLabel("IR", irr.getIR());
+		   
 
 		   resetPortas();
-		   System.in.read();
+		   
 
+		  
         }
+        
+       
         System.out.println("Fim da execucao");
+       
+        
+	}
+
+
+    public static void main(String[] args) throws IOException{
+	
+		
+		//Interface grafica inicializador
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					janela = new InterfaceGrafica();
+					janela.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+				
+		
+        
+      
     }
 }
+
+
+
+
